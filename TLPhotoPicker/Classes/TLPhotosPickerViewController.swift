@@ -146,6 +146,8 @@ open class TLPhotosPickerViewController: UIViewController {
     var placeholderThumbnail: UIImage? = nil
     var cameraImage: UIImage? = nil
     
+    private var isLimitMode: Bool = false
+    
     deinit {
         //print("deinit TLPhotosPickerViewController")
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
@@ -218,6 +220,7 @@ open class TLPhotosPickerViewController: UIViewController {
     }
     
     private func loadPhotos(limitMode: Bool) {
+        self.isLimitMode = limitMode
         self.libraryService.configurePhotoLibrary(limitMode: limitMode, delegate: self)
         self.libraryService.fetchCollections(configure: self.configure)
     }
@@ -423,7 +426,7 @@ extension TLPhotosPickerViewController {
     }
     
     private func updatePresentLimitedLibraryButton() {
-        if #available(iOS 14.0, *), self.photoLibrary.limitMode && self.configure.preventAutomaticLimitedAccessAlert {
+        if #available(iOS 14.0, *), isLimitMode && self.configure.preventAutomaticLimitedAccessAlert {
             self.customNavItem.rightBarButtonItems = [self.doneButton, self.photosButton]
         } else {
             self.customNavItem.rightBarButtonItems = [self.doneButton]
